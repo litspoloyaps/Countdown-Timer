@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Countdown Timer</title>
+  <title>Editable Countdown Timer</title>
   <style>
     /* ====== BASIC RESET ====== */
     * {
@@ -38,10 +38,34 @@
     }
 
     #time {
-      font-size: 4em;
-      font-weight: bold;
-      letter-spacing: 3px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 30px;
+    }
+
+    input {
+      width: 70px;
+      text-align: center;
+      font-size: 2em;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      background: rgba(255,255,255,0.3);
+      box-shadow: 0 0 5px rgba(255,255,255,0.6);
+    }
+
+    .colon {
+      font-size: 2.5em;
+      font-weight: bold;
     }
 
     .btn-group {
@@ -72,8 +96,14 @@
 <body>
 
   <div class="container">
-    <h2>⏰ Countdown Timer</h2>
-    <h1 id="time">01:00:00</h1>
+    <h2>⏰ Editable Countdown Timer</h2>
+    <div id="time">
+      <input type="number" id="hours" min="0" max="99" value="1">
+      <span class="colon">:</span>
+      <input type="number" id="minutes" min="0" max="59" value="0">
+      <span class="colon">:</span>
+      <input type="number" id="seconds" min="0" max="59" value="0">
+    </div>
     <div class="btn-group">
       <button id="startBtn">Start</button>
       <button id="pauseBtn">Pause</button>
@@ -82,35 +112,46 @@
   </div>
 
   <script>
-    // initial countdown time
-    let hours = 1, minutes = 0, seconds = 0;
-    let totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
-
+    let totalSeconds = 0;
     let timer = null;
     let isRunning = false;
 
-    const timeDisplay = document.getElementById("time");
+    const hrsInput = document.getElementById("hours");
+    const minsInput = document.getElementById("minutes");
+    const secsInput = document.getElementById("seconds");
     const startBtn = document.getElementById("startBtn");
     const pauseBtn = document.getElementById("pauseBtn");
     const resetBtn = document.getElementById("resetBtn");
 
-    // update display function
-    function updateDisplay() {
+    function getTotalSeconds() {
+      let h = parseInt(hrsInput.value) || 0;
+      let m = parseInt(minsInput.value) || 0;
+      let s = parseInt(secsInput.value) || 0;
+      return (h * 3600) + (m * 60) + s;
+    }
+
+    function updateInputsFromTotal() {
       let h = Math.floor(totalSeconds / 3600);
       let m = Math.floor((totalSeconds % 3600) / 60);
       let s = totalSeconds % 60;
-      timeDisplay.innerHTML =
-        `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      hrsInput.value = String(h).padStart(2, "0");
+      minsInput.value = String(m).padStart(2, "0");
+      secsInput.value = String(s).padStart(2, "0");
     }
 
-    // start timer
     startBtn.addEventListener("click", () => {
       if (!isRunning) {
+        totalSeconds = getTotalSeconds();
+        if (totalSeconds <= 0) {
+          alert("Please set a valid time before starting!");
+          return;
+        }
+
         isRunning = true;
         timer = setInterval(() => {
           if (totalSeconds > 0) {
             totalSeconds--;
-            updateDisplay();
+            updateInputsFromTotal();
           } else {
             clearInterval(timer);
             alert("⏱️ Time’s up!");
@@ -120,22 +161,19 @@
       }
     });
 
-    // pause timer
     pauseBtn.addEventListener("click", () => {
       clearInterval(timer);
       isRunning = false;
     });
 
-    // reset timer
     resetBtn.addEventListener("click", () => {
       clearInterval(timer);
-      totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
-      updateDisplay();
       isRunning = false;
+      hrsInput.value = "1";
+      minsInput.value = "0";
+      secsInput.value = "0";
     });
 
-    // initialize display
-    updateDisplay();
   </script>
 
 </body>
