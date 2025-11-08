@@ -98,11 +98,11 @@
   <div class="container">
     <h2>⏰ Editable Countdown Timer</h2>
     <div id="time">
-      <input type="number" id="hours" min="0" max="99" value="00">
+      <input type="number" id="hours" min="0" max="99" value="0">
       <span class="colon">:</span>
-      <input type="number" id="minutes" min="0" max="59" value="00">
+      <input type="number" id="minutes" min="0" max="59" value="0">
       <span class="colon">:</span>
-      <input type="number" id="seconds" min="0" max="59" value="00">
+      <input type="number" id="seconds" min="0" max="59" value="0">
     </div>
     <div class="btn-group">
       <button id="startBtn">Start</button>
@@ -169,13 +169,14 @@
     resetBtn.addEventListener("click", () => {
       clearInterval(timer);
       isRunning = false;
-      hrsInput.value = "00";
-      minsInput.value = "00";
-      secsInput.value = "00";
+      hrsInput.value = "0";
+      minsInput.value = "0";
+      secsInput.value = "0";
     });
 
   </script>
 
 </body>
 </html>
+
 
